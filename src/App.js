@@ -1,24 +1,34 @@
-import logo from './logo.svg';
 import './App.css';
+import { createContext, useState } from 'react';
+import { AddTransaction } from './Components/AddTransaction';
+import { ListTransaction } from './Components/ListTransaction';
+
+export let Context = createContext(null);
 
 function App() {
+  let [book, setBook] = useState([]);
+  let [transaction, setTransaction] = useState({
+    moneyFlow: '',
+    name: '',
+    details: '',
+    amount: ''
+  });
+
+  let contextPayload = {
+    book,
+    setBook,
+    transaction,
+    setTransaction
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Context.Provider value={contextPayload}>
+      <div className="App">
+        <h1>Expense Tracker</h1>
+        <AddTransaction/>
+        <ListTransaction/>
+      </div>
+    </Context.Provider>
   );
 }
 
