@@ -1,12 +1,12 @@
 import { Container } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-//import React, { useContext } from 'react'
-//import { Context } from '../App'
+import React, { useContext } from 'react'
+import { Context } from '../App'
 
 export const BookHistory = () => {
 
-  //let {book} = useContext(Context);
-  let book = require('../sampleData.json');
+  let {book} = useContext(Context);
+  //let book = require('../sampleData.json');
   
   let rows = book.map((transaction, index) => {
     return {...transaction, 'id' : index + 1}
@@ -23,7 +23,7 @@ export const BookHistory = () => {
 
   return (
     <Container>
-      <h3>Book History</h3>
+      <h5>Book History</h5>
       <div style={{minHeight: 400, width: '100%'}}>
         <DataGrid
           rows={rows}

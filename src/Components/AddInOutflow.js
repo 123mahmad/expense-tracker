@@ -1,11 +1,11 @@
-import { Button, FormControl, Input, InputLabel } from '@mui/material'
+import { FormControl, Input, InputLabel } from '@mui/material'
 import { Container } from '@mui/system';
 import React, { useContext } from 'react'
 import { Context } from '../App';
 
-export const AddOutflow = () => {
+export const AddInOutflow = () => {
 
-  let {transaction, setTransaction, book, setBook} = useContext(Context);
+  let {transaction, setTransaction} = useContext(Context);
 
   function handleChange(e) {
     let name = e.target.name;
@@ -13,18 +13,21 @@ export const AddOutflow = () => {
     setTransaction({...transaction, [name]: value})
   };
 
-  function handleSubmission() {
-    setBook(book.concat({...transaction, 'time': new Date()}));
-    setTransaction({});
-  };
-
   return (
     <Container>
       <div>
-        <FormControl>
-          <InputLabel htmlFor='name'>To:</InputLabel>
-          <Input onChange={handleChange} name='name' id='name' type='text' value={transaction.name}></Input>
-        </FormControl>
+        {transaction.moneyFlow === 'in'
+          && 
+          <FormControl>
+            <InputLabel htmlFor='name'>From:</InputLabel>
+            <Input onChange={handleChange} name='name' id='name' type='text' value={transaction.name}></Input>
+          </FormControl>}
+        {transaction.moneyFlow === 'out'
+          && 
+          <FormControl>
+            <InputLabel htmlFor='name'>To:</InputLabel>
+            <Input onChange={handleChange} name='name' id='name' type='text' value={transaction.name}></Input>
+          </FormControl>}
       </div>
       <br></br>
       <div>
@@ -40,8 +43,6 @@ export const AddOutflow = () => {
           <Input onChange={handleChange} name='amount' id='amount' type='number' value={transaction.amount}></Input>
         </FormControl>
       </div>
-      <br></br>
-      <Button variant='contained' onClick={handleSubmission}>Submit</Button>
     </Container>
   )
 }
