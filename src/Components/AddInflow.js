@@ -14,12 +14,12 @@ export const AddInflow = () => {
   };
 
   function handleSubmission() {
-    setBook(book.concat(transaction));
+    setBook(book.concat({...transaction, 'time': new Date()}));
+    setTransaction({});
   };
 
   return (
     <Container>
-      <h5>(Inflow)</h5>
       <div>
         <FormControl>
           <InputLabel htmlFor='name'>From:</InputLabel>

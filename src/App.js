@@ -1,7 +1,7 @@
 import './App.css';
 import { createContext, useState } from 'react';
 import { AddTransaction } from './Components/AddTransaction';
-import { ListTransaction } from './Components/ListTransaction';
+import { BookHistory } from './Components/BookHistory';
 
 export let Context = createContext(null);
 
@@ -26,7 +26,7 @@ function App() {
       <div className="App">
         <h1>Expense Tracker</h1>
         <AddTransaction/>
-        <ListTransaction/>
+        <BookHistory/>
       </div>
     </Context.Provider>
   );
