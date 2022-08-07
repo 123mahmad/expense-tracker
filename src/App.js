@@ -4,41 +4,80 @@ import { AddTransaction } from './Components/AddTransaction';
 import { BookHistory } from './Components/BookHistory';
 import { AppBar, Avatar, BottomNavigation, createTheme, IconButton, MenuItem, Select, Toolbar, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import { Delete, Edit } from '@mui/icons-material';
+import { BookTitle } from './Components/BookTitle';
+import initTransactions from './sample.json'
+import { Add } from '@mui/icons-material';
+import { v4 as uuidv4 } from 'uuid';
+
+function getLibrary() {
+  let identity = uuidv4();
+  let userLibrary = [{'id':identity, 'name':'New Book'}];
+  userLibrary = [{'id':1, 'name':'first'},{'id':2, 'name':'second'},{'id':3, 'name':'third'}];
+  return userLibrary;
+};
+
+function getBook(library) {
+  if (library && library.length !== 0) {return library[0]}
+  return null;
+};
+
+function getTransactions() {
+  let userTransactions = [];
+  userTransactions = initTransactions;
+  return userTransactions;
+};
+
+let emptyTransaction = {
+  id: '',
+  bookId: '',
+  time: '',
+  moneyFlow: '',
+  amount: '',
+  name: '',
+  details: ''
+};
 
 export let Context = createContext(null);
 
 function App() {
-  let [library, setLibrary] = useState({Book0: [{'name':'book0'}], Book1:[{'name':'book1'}], Book2:[{'name':'book2'}], Book3:[{'name':'book3'}]});
-  let [currentBookName, setCurrentBookName] = useState('Book0')
-  let [book, setBook] = useState(library.Book0);
-  let [transaction, setTransaction] = useState({
-    id: '',
-    time: '',
-    moneyFlow: '',
-    amount: '',
-    name: '',
-    details: ''
-  });
+  
+  let [library, setLibrary] = useState(getLibrary);
+  let [currentBook, setCurrentBook] = useState(getBook(library))
+  let [transactions, setTransactions] = useState(getTransactions);
+  let [transaction, setTransaction] = useState(emptyTransaction);
 
   let contextPayload = {
-    book,
-    setBook,
+    emptyTransaction,
+    library,
+    setLibrary,
+    currentBook,
+    setCurrentBook,
+    transactions,
+    setTransactions,
     transaction,
     setTransaction
   };
 
-  useEffect(() => {
-    setLibrary({...library, [currentBookName]: book})
-    // eslint-disable-next-line
-  },[currentBookName, book])
-
   function handleChange(e) {
-    let value = e.target.value;
-    setCurrentBookName(value);
-    let currentBook = library[value];  
-    setBook(currentBook);
-  }
+    let newBook = library.find(book=>{
+      return book.name === e.target.value;
+    })
+    setCurrentBook(newBook);
+  };
+
+  function handleNew() {
+    let identity = uuidv4();
+    setLibrary([...library, {'id':identity, 'name':'New Book'}]);
+    setCurrentBook({'id':identity, 'name':'New Book'});
+  };
+
+  useEffect(()=>{
+    let newLibrary = library.filter((book)=>{
+      return book.id !== currentBook.id;
+    })
+    setLibrary([...newLibrary, currentBook]);
+    // eslint-disable-next-line
+  },[currentBook])
 
   return (
     <Context.Provider value={contextPayload}>
@@ -46,20 +85,16 @@ function App() {
         <AppBar position='static'>
           <Toolbar sx={{justifyContent: 'center'}}>
             <Typography sx={{marginRight: 'auto'}}>Expense Tracker</Typography>
-            <Select labelId='selectBook' value={currentBookName} onChange={handleChange}>
-              {Object.keys(library).map((bookName, index) => {
-                  return <MenuItem key={index} value={bookName}>{bookName}</MenuItem>
+            <Select labelId='selectBook' value={currentBook.name} onChange={handleChange}>
+              {library.map((book)=>{
+                return <MenuItem key={book.id} value={book.name}>{book.name}</MenuItem>
               })}
             </Select>
-            <Avatar/>
+            <IconButton onClick={handleNew}><Add/>New</IconButton>
+            <Avatar sx={{marginLeft: '24px'}}/>
           </Toolbar>
         </AppBar>
-        <h3>
-          {currentBookName}
-          {/* <Edit/> */}
-          <IconButton><Edit/></IconButton>
-          <IconButton><Delete/></IconButton>
-        </h3>
+        <BookTitle/>
         <AddTransaction/>
         <BookHistory/>
         <BottomNavigation

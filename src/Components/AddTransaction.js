@@ -1,12 +1,13 @@
 import { Button, ButtonGroup, Container, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
 import React, { useContext } from 'react'
-import { AddInOutflow } from './AddInOutflow';
+import { AddTransactionDetails } from './AddTransactionDetails';
 import { Context } from '../App';
 import { Close } from '@mui/icons-material';
+import { v4 as uuidv4 } from 'uuid';
 
 export const AddTransaction = () => {
 
-  let {transaction, setTransaction, book, setBook} = useContext(Context);
+  let {emptyTransaction, transaction, setTransaction, transactions, setTransactions, currentBook} = useContext(Context);
 
   function handleChange(e) {
     let value = e.target.value;
@@ -14,12 +15,12 @@ export const AddTransaction = () => {
   }
 
   function handelCancellation() {
-    setTransaction({});
+    setTransaction(emptyTransaction);
   };
 
   function handleSubmission() {
-    setBook(book.concat({...transaction, 'time': new Date()}));
-    setTransaction({});
+    setTransactions([...transactions, {...transaction, 'id':uuidv4(), 'bookId':currentBook.id, 'time': new Date()}]);
+    setTransaction(emptyTransaction);
   };
 
   return (
@@ -44,7 +45,7 @@ export const AddTransaction = () => {
          && <Button color='success' onClick={handleSubmission}>Submit</Button>}
       </ButtonGroup>
       {(transaction.moneyFlow === 'in' || transaction.moneyFlow === 'out')
-       && <AddInOutflow/>}
+       && <AddTransactionDetails/>}
     </Container>
   )
 }

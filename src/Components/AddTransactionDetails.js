@@ -3,7 +3,7 @@ import { Container } from '@mui/system';
 import React, { useContext } from 'react'
 import { Context } from '../App';
 
-export const AddInOutflow = () => {
+export const AddTransactionDetails = () => {
 
   let {transaction, setTransaction} = useContext(Context);
 
@@ -15,6 +15,7 @@ export const AddInOutflow = () => {
 
   return (
     <Container>
+      <br></br>
       <div>
         {transaction.moneyFlow === 'in'
           && 
