@@ -4,8 +4,9 @@ import { AddTransactionDetails } from './AddTransactionDetails';
 import { Context } from '../App';
 import { Close } from '@mui/icons-material';
 import { v4 as uuidv4 } from 'uuid';
+import { uploadTransaction } from '../firebase';
 
-export const AddTransaction = () => {
+export const AddTransaction = ({user}) => {
 
   let {emptyTransaction, transaction, setTransaction, transactions, setTransactions, currentBook} = useContext(Context);
 
@@ -19,7 +20,18 @@ export const AddTransaction = () => {
   };
 
   function handleSubmission() {
-    setTransactions([...transactions, {...transaction, 'id':uuidv4(), 'bookId':currentBook.id, 'time': new Date()}]);
+    let identity = uuidv4();
+    uploadTransaction(user, identity, currentBook.id, transaction.moneyFlow, transaction.amount, transaction.name, transaction.details);
+    // addDoc(collection(db,'transactions'),{
+    //   'uid': user.uid,
+    //   'id': identity,
+    //   'bookId': currentBook.id,
+    //   'moneyFlow': transaction.moneyFlow,
+    //   'amount': transaction.amount,
+    //   'name': transaction.name,
+    //   'details': transaction.details
+    // });
+    setTransactions([...transactions, {...transaction, 'id':identity, 'bookId':currentBook.id, 'time': new Date()}]);
     setTransaction(emptyTransaction);
   };
 

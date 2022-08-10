@@ -2,12 +2,14 @@ import './App.css';
 import { createContext, useEffect, useState } from 'react';
 import { AddTransaction } from './Components/AddTransaction';
 import { BookHistory } from './Components/BookHistory';
-import { AppBar, Avatar, BottomNavigation, createTheme, IconButton, MenuItem, Select, Toolbar, Typography } from '@mui/material';
+import { AppBar, Avatar, BottomNavigation, createTheme, IconButton, Toolbar, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { BookTitle } from './Components/BookTitle';
 import initTransactions from './sample.json'
-import { Add } from '@mui/icons-material';
 import { v4 as uuidv4 } from 'uuid';
+import { auth, signIn, signOutUser, getProfilePicUrl} from './firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
+
 
 function getLibrary() {
   let identity = uuidv4();
@@ -45,6 +47,9 @@ function App() {
   let [currentBook, setCurrentBook] = useState(getBook(library))
   let [transactions, setTransactions] = useState(getTransactions);
   let [transaction, setTransaction] = useState(emptyTransaction);
+  let [user, loading, error] = useAuthState(auth);
+
+  console.log(user, loading, error);
 
   let contextPayload = {
     emptyTransaction,
@@ -58,18 +63,9 @@ function App() {
     setTransaction
   };
 
-  function handleChange(e) {
-    let newBook = library.find(book=>{
-      return book.name === e.target.value;
-    })
-    setCurrentBook(newBook);
-  };
+  useEffect(()=>{
 
-  function handleNew() {
-    let identity = uuidv4();
-    setLibrary([...library, {'id':identity, 'name':'New Book'}]);
-    setCurrentBook({'id':identity, 'name':'New Book'});
-  };
+  })
 
   useEffect(()=>{
     let newLibrary = library.filter((book)=>{
@@ -85,18 +81,14 @@ function App() {
         <AppBar position='static'>
           <Toolbar sx={{justifyContent: 'center'}}>
             <Typography sx={{marginRight: 'auto'}}>Expense Tracker</Typography>
-            <Select labelId='selectBook' value={currentBook.name} onChange={handleChange}>
-              {library.map((book)=>{
-                return <MenuItem key={book.id} value={book.name}>{book.name}</MenuItem>
-              })}
-            </Select>
-            <IconButton onClick={handleNew}><Add/>New</IconButton>
-            <Avatar sx={{marginLeft: '24px'}}/>
+            {!user && <IconButton onClick={signIn}><Avatar sx={{marginRight: '10px'}}/>Sign In</IconButton>}
+            {user && <Typography sx={{marginLeft: '10px'}}>{user.displayName}</Typography>}
+            {user && <IconButton onClick={signOutUser}><Avatar src={`${getProfilePicUrl}`} sx={{marginRight: '10px'}}/>Sign Out</IconButton>}
           </Toolbar>
         </AppBar>
-        <BookTitle/>
-        <AddTransaction/>
-        <BookHistory/>
+        {user && <BookTitle user={user}/>}
+        {user && <AddTransaction user={user}/>}
+        {user && <BookHistory user={user}/>}
         <BottomNavigation
           sx={{width: '100vw',
           backgroundColor: createTheme().palette.primary.main}}
