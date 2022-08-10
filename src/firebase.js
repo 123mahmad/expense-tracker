@@ -7,12 +7,15 @@ import {
 } from 'firebase/auth';
 import {
   getFirestore,
-  collection,
-  addDoc,
-  //setDoc,
-  //updateDoc,
-  //doc,
+  setDoc,
+  doc,
   serverTimestamp,
+  deleteDoc,
+  collection,
+  where,
+  query,
+  getDocs,
+  writeBatch,
 } from 'firebase/firestore';
 
 let firebaseConfig = {
@@ -54,7 +57,7 @@ function addSizeToGoogleProfilePic(url) {
 
 export async function uploadTransaction(user, id, bookId, moneyFlow, amount, name, details) {
   try {
-    await addDoc(collection(db, 'transactions'), {
+    await setDoc(doc(db, 'transactions', id), {
       'uid': user.uid,
       'id': id,
       'time': serverTimestamp(),
@@ -66,13 +69,13 @@ export async function uploadTransaction(user, id, bookId, moneyFlow, amount, nam
     });
   }
   catch(error) {
-    console.error('Error writing new book to Firebase Database', error);
+    console.error('Error writing new transaction to Firebase Database', error);
   }
 };
 
 export async function uploadBook(user, id, name) {
   try {
-    await addDoc(collection(db, 'books'), {
+    await setDoc(doc(db, 'books', id), {
       'uid': user.uid,
       'id': id,
       'time': serverTimestamp(),
@@ -84,19 +87,39 @@ export async function uploadBook(user, id, name) {
   }
 };
 
-// export async function loadBooks(user) {
-//   let booksQuery = query(
-//     collection(db, 'books'),
-//     where("uid", "==", user.uid)
-//   );
-//   let bookList = [];
-//   onSnapshot(booksQuery, (snaps) => {
-//     bookList = [];
-//     snaps.forEach((doc) => {
-//       bookList.push(doc.data());
-//     });
-//     console.log(bookList);
-//     return bookList;
-//   });
-//   return bookList;
-// };
+export async function updateBook(id, name) {
+  try {
+    await setDoc(doc(db, 'books', id), {
+      'timeUpdated': serverTimestamp(),
+      'name': name
+    },{merge: true});
+  }
+  catch(error) {
+    console.error('Error updating book in Firebase Database', error);
+  }
+};
+
+export async function deleteBook(id) {
+  try {
+    await deleteDoc(doc(db, 'books', id));
+    await deleteSubTransactions(id);
+  }
+  catch(error) {
+    console.error('Error deleting book from Firebase Database', error);
+  }
+};
+
+async function deleteSubTransactions(bookId) {
+  try {
+    let q = query(collection(db, 'transactions'), where('bookId','==',bookId))
+    let snap = await getDocs(q);
+    let batch = writeBatch(db);
+    snap.forEach((transaction) => {
+      batch.delete(doc(db, 'transactions', transaction.id));
+    });
+    await batch.commit();
+  }
+  catch(error) {
+    console.error('Error deleting subsequent transactions from Firebase Database', error);
+  }
+};

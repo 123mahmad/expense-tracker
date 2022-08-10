@@ -71,17 +71,9 @@ function App() {
         });
         setTransactions(transactionList);
       });
-      
+
     };
   },[user])
-
-  // useEffect(()=>{
-  //   let newLibrary = library.filter((book)=>{
-  //     return book.id !== currentBook.id;
-  //   })
-  //   setLibrary([...newLibrary, currentBook]);
-  //   // eslint-disable-next-line
-  // },[currentBook])
 
   return (
     <Context.Provider value={contextPayload}>

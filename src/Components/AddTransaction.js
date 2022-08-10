@@ -8,7 +8,7 @@ import { uploadTransaction } from '../firebase';
 
 export const AddTransaction = ({user}) => {
 
-  let {emptyTransaction, transaction, setTransaction, transactions, setTransactions, currentBook} = useContext(Context);
+  let {emptyTransaction, transaction, setTransaction, currentBook} = useContext(Context);
 
   function handleChange(e) {
     let value = e.target.value;
@@ -22,7 +22,6 @@ export const AddTransaction = ({user}) => {
   function handleSubmission() {
     let identity = uuidv4();
     uploadTransaction(user, identity, currentBook.id, transaction.moneyFlow, transaction.amount, transaction.name, transaction.details);
-    setTransactions([...transactions, {...transaction, 'id':identity, 'bookId':currentBook.id, 'time': new Date()}]);
     setTransaction(emptyTransaction);
   };
 
