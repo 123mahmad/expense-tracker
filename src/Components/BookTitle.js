@@ -1,4 +1,4 @@
-import { Add, Delete, Done, Edit } from '@mui/icons-material'
+import { Add, Delete, Done, Edit, HourglassEmpty } from '@mui/icons-material'
 import { IconButton, InputAdornment, MenuItem, Select, TextField } from '@mui/material'
 import { Container } from '@mui/system'
 import React, { useContext, useState } from 'react'
@@ -7,15 +7,13 @@ import { v4 as uuidv4 } from 'uuid';
 import { uploadBook } from '../firebase'
 
 export const BookTitle = ({user}) => {
-  
+  let [updateField, setUpdateField] = useState('')
   let {library, setLibrary, currentBook, setCurrentBook, transactions, setTransactions} = useContext(Context);
   let [lockName, setLockName] = useState(true);
 
   function handleNew() {
     let identity = uuidv4();
     uploadBook(user, identity, 'New Book');
-    setLibrary([...library, {'id':identity, 'name':'New Book'}]);
-    setCurrentBook({'id':identity, 'name':'New Book'});
   };
 
   function handleChange(e) {
@@ -27,6 +25,7 @@ export const BookTitle = ({user}) => {
   
   function handleEditButton() {
     setLockName(false);
+    setUpdateField(currentBook.name);
   };
 
   function handleDoneButton(e) {
@@ -34,11 +33,7 @@ export const BookTitle = ({user}) => {
   };
 
   function handleNameChange(e) {
-    setCurrentBook({...currentBook, 'name': e.target.value});
-    let newLibrary = library.filter((book)=>{
-      return book.id !== currentBook.id;
-    })
-    setLibrary([...newLibrary, currentBook]);
+    setUpdateField(e.target.value);
   };
   
   function handleDelete() {
@@ -61,7 +56,10 @@ export const BookTitle = ({user}) => {
 
   return (
     <Container>
-      <h3>
+      {!currentBook  && <h3>
+        <IconButton onClick={handleNew}><Add/>Create New</IconButton>
+      </h3>}
+      {currentBook && <h3>
         {lockName && <IconButton onClick={handleNew}><Add/></IconButton>}
         {lockName && <Select labelId='selectBook' value={currentBook.name} onChange={handleChange}>
           {library.map((book)=>{
@@ -77,7 +75,7 @@ export const BookTitle = ({user}) => {
             )
           }}
           disabled={lockName ? true : false}
-          value={currentBook.name}
+          value={updateField}
           onChange={handleNameChange}
         />}
         {!lockName && <TextField
@@ -89,12 +87,12 @@ export const BookTitle = ({user}) => {
             )
           }}
           disabled={lockName ? true : false}
-          value={currentBook.name}
+          value={updateField}
           onChange={handleNameChange}
         />}
         {lockName && <IconButton onClick={handleEditButton}><Edit/></IconButton>}
         {lockName && <IconButton onClick={handleDelete}><Delete/></IconButton>}
-      </h3>
+      </h3>}
     </Container>
   )
 }

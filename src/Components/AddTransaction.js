@@ -22,15 +22,6 @@ export const AddTransaction = ({user}) => {
   function handleSubmission() {
     let identity = uuidv4();
     uploadTransaction(user, identity, currentBook.id, transaction.moneyFlow, transaction.amount, transaction.name, transaction.details);
-    // addDoc(collection(db,'transactions'),{
-    //   'uid': user.uid,
-    //   'id': identity,
-    //   'bookId': currentBook.id,
-    //   'moneyFlow': transaction.moneyFlow,
-    //   'amount': transaction.amount,
-    //   'name': transaction.name,
-    //   'details': transaction.details
-    // });
     setTransactions([...transactions, {...transaction, 'id':identity, 'bookId':currentBook.id, 'time': new Date()}]);
     setTransaction(emptyTransaction);
   };

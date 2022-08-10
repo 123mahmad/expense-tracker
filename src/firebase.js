@@ -9,13 +9,10 @@ import {
   getFirestore,
   collection,
   addDoc,
-  query,
-  onSnapshot,
-  setDoc,
-  updateDoc,
-  doc,
+  //setDoc,
+  //updateDoc,
+  //doc,
   serverTimestamp,
-  where,
 } from 'firebase/firestore';
 
 let firebaseConfig = {
@@ -57,7 +54,7 @@ function addSizeToGoogleProfilePic(url) {
 
 export async function uploadTransaction(user, id, bookId, moneyFlow, amount, name, details) {
   try {
-    await addDoc(collection(getFirestore(), 'transactions'), {
+    await addDoc(collection(db, 'transactions'), {
       'uid': user.uid,
       'id': id,
       'time': serverTimestamp(),
@@ -87,11 +84,19 @@ export async function uploadBook(user, id, name) {
   }
 };
 
-export function loadBooks() {
-  let booksQuery = query(collection(db, 'books'), where("uid", "==", auth.currentUser.uid));
-
-  // Start listening to the query.
-  onSnapshot(booksQuery, function(snapshot) {
-    console.log(snapshot);
-  });
-}
+// export async function loadBooks(user) {
+//   let booksQuery = query(
+//     collection(db, 'books'),
+//     where("uid", "==", user.uid)
+//   );
+//   let bookList = [];
+//   onSnapshot(booksQuery, (snaps) => {
+//     bookList = [];
+//     snaps.forEach((doc) => {
+//       bookList.push(doc.data());
+//     });
+//     console.log(bookList);
+//     return bookList;
+//   });
+//   return bookList;
+// };

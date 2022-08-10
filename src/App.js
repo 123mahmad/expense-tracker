@@ -5,29 +5,9 @@ import { BookHistory } from './Components/BookHistory';
 import { AppBar, Avatar, BottomNavigation, createTheme, IconButton, Toolbar, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { BookTitle } from './Components/BookTitle';
-import initTransactions from './sample.json'
-import { v4 as uuidv4 } from 'uuid';
-import { auth, signIn, signOutUser, getProfilePicUrl} from './firebase';
+import { auth, signIn, signOutUser, getProfilePicUrl, db} from './firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
-
-
-function getLibrary() {
-  let identity = uuidv4();
-  let userLibrary = [{'id':identity, 'name':'New Book'}];
-  userLibrary = [{'id':1, 'name':'first'},{'id':2, 'name':'second'},{'id':3, 'name':'third'}];
-  return userLibrary;
-};
-
-function getBook(library) {
-  if (library && library.length !== 0) {return library[0]}
-  return null;
-};
-
-function getTransactions() {
-  let userTransactions = [];
-  userTransactions = initTransactions;
-  return userTransactions;
-};
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
 
 let emptyTransaction = {
   id: '',
@@ -43,9 +23,9 @@ export let Context = createContext(null);
 
 function App() {
   
-  let [library, setLibrary] = useState(getLibrary);
-  let [currentBook, setCurrentBook] = useState(getBook(library))
-  let [transactions, setTransactions] = useState(getTransactions);
+  let [library, setLibrary] = useState();
+  let [currentBook, setCurrentBook] = useState()
+  let [transactions, setTransactions] = useState([]);
   let [transaction, setTransaction] = useState(emptyTransaction);
   let [user, loading, error] = useAuthState(auth);
 
@@ -64,16 +44,44 @@ function App() {
   };
 
   useEffect(()=>{
+    if (user) {
 
-  })
+      let booksQuery = query(
+        collection(db, 'books'),
+        where("uid", "==", user.uid),
+      );
+      onSnapshot(booksQuery, (snaps) => {
+        let bookList = [];
+        snaps.forEach((doc) => {
+          bookList.push(doc.data());
+        });
+        console.log(bookList);
+        setLibrary(bookList);
+        setCurrentBook(bookList[0]);
+      });
+      
+      let transactionsQuery = query(
+        collection(db, 'transactions'),
+        where("uid", "==", user.uid),
+      );
+      onSnapshot(transactionsQuery, (snaps) => {
+        let transactionList = [];
+        snaps.forEach((doc) => {
+          transactionList.push(doc.data());
+        });
+        setTransactions(transactionList);
+      });
+      
+    };
+  },[user])
 
-  useEffect(()=>{
-    let newLibrary = library.filter((book)=>{
-      return book.id !== currentBook.id;
-    })
-    setLibrary([...newLibrary, currentBook]);
-    // eslint-disable-next-line
-  },[currentBook])
+  // useEffect(()=>{
+  //   let newLibrary = library.filter((book)=>{
+  //     return book.id !== currentBook.id;
+  //   })
+  //   setLibrary([...newLibrary, currentBook]);
+  //   // eslint-disable-next-line
+  // },[currentBook])
 
   return (
     <Context.Provider value={contextPayload}>
@@ -86,9 +94,12 @@ function App() {
             {user && <IconButton onClick={signOutUser}><Avatar src={`${getProfilePicUrl}`} sx={{marginRight: '10px'}}/>Sign Out</IconButton>}
           </Toolbar>
         </AppBar>
-        {user && <BookTitle user={user}/>}
-        {user && <AddTransaction user={user}/>}
-        {user && <BookHistory user={user}/>}
+        {(!user && loading) && <h3>...Checking Current User</h3>}
+        {(!user) && <h3>Not Signed In</h3>}
+        {(user && library === undefined) && <h3>...Loading User Data</h3>}
+        {(user && library) && <BookTitle user={user}/>}
+        {(user && currentBook) && <AddTransaction user={user}/>}
+        {(user && currentBook) && <BookHistory user={user}/>}
         <BottomNavigation
           sx={{width: '100vw',
           backgroundColor: createTheme().palette.primary.main}}
