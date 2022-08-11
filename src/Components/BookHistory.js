@@ -1,7 +1,9 @@
+import { Delete } from '@mui/icons-material';
 import { Container } from '@mui/material';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
 import React, { useContext } from 'react'
 import { Context } from '../App'
+import { deleteTransaction } from '../firebase';
 
 export const BookHistory = () => {
 
@@ -13,6 +15,15 @@ export const BookHistory = () => {
     { field: 'amount', headerName: 'Amount', type: 'number', flex: 1, maxWidth: 75},
     { field: 'name', headerName: 'Name', flex: 1},
     { field: 'details', headerName: 'Details', flex: 2.5},
+    // { field: 'delete', headerName:'Delete', type: 'actions', width:50,
+    //   getActions: (id)=>{
+    //     return <GridActionsCellItem
+    //       icon={<Delete/>}
+    //       label='Delete'
+    //       onClick={deleteTransaction(id)}
+    //     />
+    //   }
+    // }
   ];
 
   let rows = transactions.filter((transaction)=>{

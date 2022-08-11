@@ -121,3 +121,12 @@ async function deleteSubTransactions(bookId) {
     console.error('Error deleting subsequent transactions from Firebase Database', error);
   }
 };
+
+export async function deleteTransaction(id) {
+  try {
+    await deleteDoc(doc(db, 'transactions', id));
+  }
+  catch(error) {
+    console.error('Error deleting book from Firebase Database', error);
+  }
+};
