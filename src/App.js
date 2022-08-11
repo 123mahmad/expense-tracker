@@ -64,7 +64,7 @@ function App() {
       onSnapshot(transactionsQuery, (snaps) => {
         let transactionList = [];
         snaps.forEach((doc) => {
-          transactionList.push(doc.data());
+          transactionList.push({...doc.data(), 'time': new Date(doc.data().time.seconds*1000)});
         });
         setTransactions(transactionList);
       });

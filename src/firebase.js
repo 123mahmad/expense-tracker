@@ -53,13 +53,12 @@ function addSizeToGoogleProfilePic(url) {
   return url;
 };
 
-export async function uploadTransaction(user, id, time, bookId, moneyFlow, amount, name, details) {
+export async function uploadTransaction(user, id, bookId, moneyFlow, amount, name, details) {
   try {
     await setDoc(doc(db, 'transactions', id), {
       'uid': user.uid,
       'id': id,
-      'time': time,
-      'serverTime': serverTimestamp(),
+      'time': serverTimestamp(),
       'bookId': bookId,
       'moneyFlow': moneyFlow,
       'amount': amount,
