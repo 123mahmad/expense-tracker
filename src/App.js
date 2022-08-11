@@ -42,7 +42,7 @@ function App() {
   };
 
   useEffect(()=>{
-    if (user) {
+    if (user && transactions) {
 
       let booksQuery = query(
         collection(db, 'books'),
@@ -64,7 +64,11 @@ function App() {
       onSnapshot(transactionsQuery, (snaps) => {
         let transactionList = [];
         snaps.forEach((doc) => {
-          transactionList.push({...doc.data(), 'time': new Date(doc.data().time.seconds*1000)});
+          let serverTimestamp = doc.data().time;
+          if (serverTimestamp)
+          {
+            transactionList.push({...doc.data(), 'time': new Date(serverTimestamp.seconds*1000)});
+          };
         });
         setTransactions(transactionList);
       });
