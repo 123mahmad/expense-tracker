@@ -21,7 +21,8 @@ export const AddTransaction = ({user}) => {
 
   function handleSubmission() {
     let identity = uuidv4();
-    uploadTransaction(user, identity, currentBook.id, transaction.moneyFlow, transaction.amount, transaction.name, transaction.details);
+    let time = new Date();
+    uploadTransaction(user, identity, time, currentBook.id, transaction.moneyFlow, transaction.amount, transaction.name, transaction.details);
     setTransaction(emptyTransaction);
   };
 

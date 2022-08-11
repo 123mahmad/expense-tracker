@@ -27,9 +27,7 @@ function App() {
   let [currentBook, setCurrentBook] = useState()
   let [transactions, setTransactions] = useState([]);
   let [transaction, setTransaction] = useState(emptyTransaction);
-  let [user, loading, error] = useAuthState(auth);
-
-  console.log(user, loading, error);
+  let [user, loading] = useAuthState(auth);
 
   let contextPayload = {
     emptyTransaction,
@@ -55,7 +53,6 @@ function App() {
         snaps.forEach((doc) => {
           bookList.push(doc.data());
         });
-        console.log(bookList);
         setLibrary(bookList);
         setCurrentBook(bookList[0]);
       });

@@ -3,5 +3,18 @@
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
-  "emulators": {}
+  "hosting": {
+    "public": "build",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
 }

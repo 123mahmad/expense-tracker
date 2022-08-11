@@ -31,8 +31,6 @@ let firebaseConfig = {
 let app = initializeApp(firebaseConfig);
 export let auth = getAuth(app);
 export let db = getFirestore(app);
-console.log(db);
-
 
 export async function signIn() {
   let provider = new GoogleAuthProvider();
@@ -55,12 +53,13 @@ function addSizeToGoogleProfilePic(url) {
   return url;
 };
 
-export async function uploadTransaction(user, id, bookId, moneyFlow, amount, name, details) {
+export async function uploadTransaction(user, id, time, bookId, moneyFlow, amount, name, details) {
   try {
     await setDoc(doc(db, 'transactions', id), {
       'uid': user.uid,
       'id': id,
-      'time': serverTimestamp(),
+      'time': time,
+      'serverTime': serverTimestamp(),
       'bookId': bookId,
       'moneyFlow': moneyFlow,
       'amount': amount,

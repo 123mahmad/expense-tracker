@@ -8,8 +8,8 @@ export const BookHistory = () => {
   let {transactions, currentBook} = useContext(Context);
   
   let columns = [
-    { field: 'time', headerName: 'Time', type:'dateTime', flex: 1, maxWidth: 165},
-    { field: 'moneyFlow', headerName: 'Flow', type:'singleSelect', flex: 1, maxWidth: 65, valueOptions: ['in','out']},
+    { field: 'time', headerName: 'Time', type:'dateTime', flex: 1, maxWidth: 180},
+    { field: 'moneyFlow', headerName: 'Flow', type:'singleSelect', flex: 1, maxWidth: 60, valueOptions: ['in','out']},
     { field: 'amount', headerName: 'Amount', type: 'number', flex: 1, maxWidth: 75},
     { field: 'name', headerName: 'Name', flex: 1},
     { field: 'details', headerName: 'Details', flex: 2.5},
