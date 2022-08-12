@@ -4,11 +4,11 @@ import { AddTransactionDetails } from './AddTransactionDetails';
 import { Context } from '../App';
 import { Close } from '@mui/icons-material';
 import { v4 as uuidv4 } from 'uuid';
-import { uploadTransaction } from '../firebase';
+import { updateTransaction, uploadTransaction } from '../firebase';
 
 export const AddTransaction = ({user}) => {
 
-  let {emptyTransaction, transaction, setTransaction, currentBook} = useContext(Context);
+  let {emptyTransaction, transaction, setTransaction, currentBook, editTransMode, setEditTransMode} = useContext(Context);
 
   function handleChange(e) {
     let value = e.target.value;
@@ -17,17 +17,25 @@ export const AddTransaction = ({user}) => {
 
   function handelCancellation() {
     setTransaction(emptyTransaction);
+    setEditTransMode(false);
   };
 
   function handleSubmission() {
-    let identity = uuidv4();
-    uploadTransaction(user, identity, currentBook.id, transaction.moneyFlow, transaction.amount, transaction.name, transaction.details);
+    if (!editTransMode) {
+      let identity = uuidv4();
+      uploadTransaction(user, identity, currentBook.id, transaction.moneyFlow, transaction.amount, transaction.name, transaction.details);
+    } else if (editTransMode) {
+      let identity = transaction.id;
+      updateTransaction(identity, transaction.moneyFlow, transaction.amount, transaction.name, transaction.details)
+      setEditTransMode(false);
+    }
     setTransaction(emptyTransaction);
   };
 
   return (
     <Container>
-      <Typography>Add New Transaction:</Typography>
+      {!editTransMode && <Typography>Add New Transaction:</Typography>}
+      {editTransMode && <Typography>Edit Transaction:</Typography>}
       <ButtonGroup>
         <ToggleButtonGroup
           value={transaction.moneyFlow}

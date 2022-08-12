@@ -27,6 +27,7 @@ function App() {
   let [currentBook, setCurrentBook] = useState()
   let [transactions, setTransactions] = useState([]);
   let [transaction, setTransaction] = useState(emptyTransaction);
+  let [editTransMode, setEditTransMode] = useState(false);
   let [user, loading] = useAuthState(auth);
 
   let contextPayload = {
@@ -38,7 +39,9 @@ function App() {
     transactions,
     setTransactions,
     transaction,
-    setTransaction
+    setTransaction,
+    editTransMode,
+    setEditTransMode,
   };
 
   useEffect(()=>{

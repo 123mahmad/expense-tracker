@@ -1,4 +1,4 @@
-import { Delete } from '@mui/icons-material';
+import { Delete, Edit } from '@mui/icons-material';
 import { Container } from '@mui/material';
 import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
 import React, { useContext } from 'react'
@@ -7,8 +7,16 @@ import { deleteTransaction } from '../firebase';
 
 export const BookHistory = () => {
 
-  let {transactions, currentBook} = useContext(Context);
+  let {transactions, currentBook, setTransaction, editTransMode, setEditTransMode} = useContext(Context);
   
+  function editTransaction(id) {
+    let editableTransaction = rows.filter((transaction)=>{
+      return transaction.id === id 
+    });
+    setTransaction(editableTransaction[0]);
+    setEditTransMode(true);
+  };
+
   let columns = [
     { field: 'time', headerName: 'Time', type:'dateTime', flex: 1, maxWidth: 180},
     { field: 'moneyFlow', headerName: 'Flow', type:'singleSelect', flex: 1, maxWidth: 60, valueOptions: ['in','out']},
@@ -18,8 +26,15 @@ export const BookHistory = () => {
     { field: 'actions', headerName:'Actions', type:'actions', width:70,
       getActions: (params) => [
         <GridActionsCellItem
+          icon={<Edit/>}
+          label="Edit"
+          disabled={editTransMode}
+          onClick={()=>editTransaction(params.row.id)}
+        />,
+        <GridActionsCellItem
           icon={<Delete/>}
           label="Delete"
+          disabled={editTransMode}
           onClick={()=>deleteTransaction(params.row.id)}
         />,
       ],

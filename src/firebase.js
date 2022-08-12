@@ -131,3 +131,17 @@ export async function deleteTransaction(id) {
     console.error('Error deleting book from Firebase Database', error);
   }
 };
+
+export async function updateTransaction(id, moneyFlow, amount, name, details) {
+  try {
+    await setDoc(doc(db, 'transactions', id), {
+      'moneyFlow': moneyFlow,
+      'amount': amount,
+      'name': name,
+      'details': details,
+    },{merge: true});
+  }
+  catch(error) {
+    console.error('Error updating book in Firebase Database', error);
+  }
+};
