@@ -77,6 +77,7 @@ export async function uploadBook(user, id, name) {
       'uid': user.uid,
       'id': id,
       'time': serverTimestamp(),
+      'timeCreated': serverTimestamp(),
       'name': name
     });
   }
@@ -88,7 +89,7 @@ export async function uploadBook(user, id, name) {
 export async function updateBook(id, name) {
   try {
     await setDoc(doc(db, 'books', id), {
-      'timeUpdated': serverTimestamp(),
+      'time': serverTimestamp(),
       'name': name
     },{merge: true});
   }

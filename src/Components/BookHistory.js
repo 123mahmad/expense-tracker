@@ -15,15 +15,15 @@ export const BookHistory = () => {
     { field: 'amount', headerName: 'Amount', type: 'number', flex: 1, maxWidth: 75},
     { field: 'name', headerName: 'Name', flex: 1},
     { field: 'details', headerName: 'Details', flex: 2.5},
-    // { field: 'delete', headerName:'Delete', type: 'actions', width:50,
-    //   getActions: (id)=>{
-    //     return <GridActionsCellItem
-    //       icon={<Delete/>}
-    //       label='Delete'
-    //       onClick={deleteTransaction(id)}
-    //     />
-    //   }
-    // }
+    { field: 'actions', headerName:'Actions', type:'actions', width:70,
+      getActions: (params) => [
+        <GridActionsCellItem
+          icon={<Delete/>}
+          label="Delete"
+          onClick={()=>deleteTransaction(params.row.id)}
+        />,
+      ],
+    },
   ];
 
   let rows = transactions.filter((transaction)=>{

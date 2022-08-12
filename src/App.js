@@ -7,7 +7,7 @@ import { Box } from '@mui/system';
 import { BookTitle } from './Components/BookTitle';
 import { auth, signIn, signOutUser, getProfilePicUrl, db} from './firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { collection, onSnapshot, query, where, orderBy } from 'firebase/firestore';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
 
 let emptyTransaction = {
   id: '',
@@ -47,7 +47,6 @@ function App() {
       let booksQuery = query(
         collection(db, 'books'),
         where("uid", "==", user.uid),
-        orderBy('time', 'desc'),
       );
       onSnapshot(booksQuery, (snaps) => {
         let bookList = [];
