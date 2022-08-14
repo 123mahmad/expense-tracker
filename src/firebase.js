@@ -139,6 +139,7 @@ export async function updateTransaction(id, moneyFlow, amount, name, details) {
       'amount': amount,
       'name': name,
       'details': details,
+      'timeUpdated': serverTimestamp(),
     },{merge: true});
   }
   catch(error) {
