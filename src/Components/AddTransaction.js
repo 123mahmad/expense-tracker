@@ -6,9 +6,9 @@ import { Close } from '@mui/icons-material';
 import { v4 as uuidv4 } from 'uuid';
 import { updateTransaction, uploadTransaction } from '../firebase';
 
-export const AddTransaction = ({user}) => {
+export const AddTransaction = () => {
 
-  let {emptyTransaction, transaction, setTransaction, currentBook, editTransMode, setEditTransMode} = useContext(Context);
+  let { user, emptyTransaction, transaction, setTransaction, currentBook, editTransMode, setEditTransMode} = useContext(Context);
 
   function handleChange(e) {
     let value = e.target.value;

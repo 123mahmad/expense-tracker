@@ -1,13 +1,13 @@
 import { Delete, Edit } from '@mui/icons-material';
-import { Container, Typography } from '@mui/material';
+import { Container } from '@mui/material';
 import { DataGrid, GridActionsCellItem, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarDensitySelector, GridToolbarExport, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid';
 import React, { useContext } from 'react'
 import { Context } from '../App'
 import { deleteTransaction } from '../firebase';
 
-export const BookHistory = ({user}) => {
+export const BookHistory = () => {
 
-  let {transactions, currentBook, setTransaction, editTransMode, setEditTransMode} = useContext(Context);
+  let { transactions, currentBook, setTransaction, editTransMode, setEditTransMode} = useContext(Context);
   
   function editTransaction(id) {
     let editableTransaction = rows.filter((transaction)=>{
@@ -63,8 +63,6 @@ export const BookHistory = ({user}) => {
             sx={{marginLeft: 'auto'}}
           />
         </GridToolbarContainer>
-        <Typography>Logged User: {user.displayName} ({user.email})</Typography>
-        <Typography>{}</Typography>
       </div>
     );
   };

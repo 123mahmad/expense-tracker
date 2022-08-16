@@ -6,9 +6,9 @@ import { Context } from '../App'
 import { v4 as uuidv4 } from 'uuid';
 import { deleteBook, updateBook, uploadBook } from '../firebase'
 
-export const BookTitle = ({user}) => {
+export const BookTitle = () => {
   let [updateField, setUpdateField] = useState('')
-  let {library, currentBook, setCurrentBook } = useContext(Context);
+  let {library, currentBook, setCurrentBook, user } = useContext(Context);
   let [lockName, setLockName] = useState(true);
 
   function handleNew() {

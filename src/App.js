@@ -2,12 +2,14 @@ import './App.css';
 import { createContext, useEffect, useState } from 'react';
 import { AddTransaction } from './Components/AddTransaction';
 import { BookHistory } from './Components/BookHistory';
-import { AppBar, Avatar, BottomNavigation, createTheme, IconButton, Toolbar, Typography } from '@mui/material';
+import { BottomNavigation, createTheme } from '@mui/material';
 import { Box } from '@mui/system';
 import { BookTitle } from './Components/BookTitle';
-import { auth, signIn, signOutUser, getProfilePicUrl, db} from './firebase';
+import { auth, db } from './firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { collection, onSnapshot, query, where, orderBy } from 'firebase/firestore';
+import { TopBar } from './Components/TopBar';
+import { LeftBar } from './Components/LeftBar';
 
 let emptyTransaction = {
   id: '',
@@ -42,6 +44,7 @@ function App() {
     setTransaction,
     editTransMode,
     setEditTransMode,
+    user,
   };
 
   useEffect(()=>{
@@ -85,23 +88,18 @@ function App() {
   return (
     <Context.Provider value={contextPayload}>
       <Box className="App">
-        <AppBar position='static'>
-          <Toolbar sx={{justifyContent: 'center'}}>
-            <Typography sx={{marginRight: 'auto'}}>Expense Tracker</Typography>
-            {!user && <IconButton onClick={signIn}><Avatar sx={{marginRight: '10px'}}/>Sign In</IconButton>}
-            {user && <Typography sx={{marginLeft: '10px'}}>{user.displayName}</Typography>}
-            {user && <IconButton onClick={signOutUser}><Avatar src={`${getProfilePicUrl}`} sx={{marginRight: '10px'}}/>Sign Out</IconButton>}
-          </Toolbar>
-        </AppBar>
+        <TopBar/>
+        <LeftBar/>
         {(!user && loading) && <h3>...Checking Current User</h3>}
         {(!user) && <h3>Not Signed In</h3>}
         {(user && library === undefined) && <h3>...Loading User Data</h3>}
-        {(user && library) && <BookTitle user={user}/>}
-        {(user && currentBook) && <AddTransaction user={user}/>}
-        {(user && currentBook) && <BookHistory user={user}/>}
+        {(user && library) && <BookTitle/>}
+        {(user && currentBook) && <AddTransaction/>}
+        {(user && currentBook) && <BookHistory/>}
         <BottomNavigation
           sx={{width: '100vw',
-          backgroundColor: createTheme().palette.primary.main}}
+          backgroundColor: createTheme().palette.primary.main,
+          zIndex: (theme) => theme.zIndex.drawer + 1}}
         >
         </BottomNavigation>
       </Box>
